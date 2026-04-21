@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Checklist de Inspección MRB Self Storage</title>
+    <style>
+        :root {
+            --mrb-blue: #003057;
+            --mrb-aqua: #00B2A9;
+            --mrb-orange: #F26A21;
+            --mrb-light: #F4F6F9;
+            --mrb-white: #FFFFFF;
+            --mrb-gray: #E0E0E0;
+            --mrb-dark-gray: #333333;
+        }
+
+        body {
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--mrb-light);
+            color: var(--mrb-dark-gray);
+            margin: 0;
+            padding: 20px;
+        }
+
+        /* Contenedor ajustado para no deformarse al imprimir */
+        .container {
+            max-width: 900px; 
+            margin: auto;
+            background: var(--mrb-white);
+            border-radius: 12px;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .header {
+            background-color: var(--mrb-blue);
+            color: var(--mrb-white);
+            padding: 20px;
+            text-align: center;
+            border-bottom: 5px solid var(--mrb-aqua);
+        }
+
+        .header h1 { margin: 0; font-size: 24px; }
+        .header p { margin: 5px 0 0 0; color: var(--mrb-aqua); font-size: 14px; }
+
+        .info-section {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            padding: 20px;
+            background-color: #f9fbff;
+            border-bottom: 1px solid var(--mrb-gray);
+        }
+
+        .form-group { display: flex; flex-direction: column; }
+        .form-group label { font-weight: bold; margin-bottom: 5px; color: var(--mrb-blue); font-size: 13px; text-transform: uppercase;}
+        
+        /* Box-sizing evita que los inputs se salgan de las celdas y deformen la tabla */
+        input, select {
+            box-sizing: border-box;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+
+        .checklist-section { padding: 20px; }
+
+        h2 {
+            color: var(--mrb-orange);
+            border-bottom: 2px solid var(--mrb-gray);
+            padding-bottom: 5px;
+            margin-top: 25px;
+            font-size: 18px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+            table-layout: fixed; /* Mantiene el ancho estricto de las columnas */
+        }
+
+        th, td {
+            border: 1px solid var(--mrb-gray);
+            padding: 10px;
+            text-align: left;
+            vertical-align: middle;
+            font-size: 13px;
+        }
+
+        th { background-color: var(--mrb-blue); color: var(--mrb-white); text-transform: uppercase; }
+
+        /* Porcentajes calculados para que respire bien el texto */
+        .col-item { width: 40%; font-weight: bold; }
+        .col-status { width: 20%; }
+        .col-date { width: 15%; }
+        .col-obs { width: 25%; }
+
+        select.status-dropdown { width: 100%; }
+        input[type="date"], input[type="text"] { width: 100%; }
+
+        .btn-submit {
+            background-color: var(--mrb-aqua);
+            color: white;
+            border: none;
+            padding: 15px;
+            font-size: 16px;
+            font-weight: bold;
+            border-radius: 8px;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 30px;
+            margin-bottom: 20px;
+        }
+
+        /* Reglas estrictas de impresión */
+        @media print {
+            body { background-color: white; padding: 0; }
+            .container { box-shadow: none; border-radius: 0; max-width: 100%; }
+            .btn-submit { display: none; }
+            h2 { color: var(--mrb-blue) !important; -webkit-print-color-adjust: exact; }
+            th { background-color: var(--mrb-gray) !important; color: black !important; -webkit-print-color-adjust: exact; }
+            /* Evita que las filas se partan a la mitad en el salto de página */
+            tr { page-break-inside: avoid; }
+            input, select { border: 1px solid #999; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="header">
+        <h1>MRB Self Storage</h1>
+        <p>Checklist de Inspección Técnica General</p>
+    </div>
+
+    <div class="info-section">
+        <div class="form-group">
+            <label>Sucursal Inspeccionada:</label>
+            <select>
+                <option value="">Seleccione una sucursal...</option>
+                <option disabled>--- Guatemala ---</option>
+                <option>Zona 13</option>
+                <option>Majadas</option>
+                <option>Hincapié</option>
+                <option>Muxbal</option>
+                <option>Zona 18</option>
+                <option disabled>--- El Salvador ---</option>
+                <option>Escalón</option>
+                <option>Santa Tecla</option>
+                <option>75 Ave. Norte</option>
+                <option>Juan Pablo II</option>
+                <option disabled>--- Costa Rica ---</option>
+                <option>Escazú</option>
+                <option>Curridabat</option>
+                <option>Heredia</option>
+                <option disabled>--- República Dominicana ---</option>
+                <option>Duarte</option>
+                <option>Lope de Vega</option>
+                <option>Rómulo</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label>Fecha de Inspección:</label>
+            <input type="date" id="fecha-hoy">
+        </div>
+        <div class="form-group">
+            <label>Inspector:</label>
+            <input type="text" value="Ing. Diego Mata" readonly>
+        </div>
+        <div class="form-group">
+            <label>Administrador de Sucursal:</label>
+            <input type="text" placeholder="Nombre de administradora...">
+        </div>
+    </div>
+
+    <div class="checklist-section">
+        <h2>1. Techos, Canales e Impermeabilización</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th class="col-item">Elemento a Revisar</th>
+                    <th class="col-status">Estado Actual</th>
+                    <th class="col-date">Última Actividad</th>
+                    <th class="col-obs">Observaciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td class="col-item">Limpieza general del techo (sin hojas, basura o animales)</td>
+                    <td class="col-status">
+                        <select class="status-dropdown"><option>🟢 Óptimo</option><option>🟡 Req. Atención</option><option>🔴 Crítico</option><option>⚪ N/A</option></select>
+                    </td>
+                    <td class="col-date"><input type="date"></td>
+                    <td class="col-obs"><input type="text"></td>
+                </tr>
+                <tr>
+                    <td class="col-item">Estado de canales y bajadas de agua</td>
+                    <td class="col-status">
+                        <select class="status-dropdown"><option>🟢 Óptimo</option><option>🟡 Req. Atención</option><option>🔴 Crítico</option><option>⚪ N/A</option></select>
+                    </td>
+                    <td class="col-date"><input type="date"></td>
+                    <td class="col-obs"><input type="text"></td>
+                </tr>
+                <tr>
+                    <td class="col-item">Sellos y traslapes</td>
+                    <td class="col-status">
+                        <select class="status-dropdown"><option>🟢 Óptimo</option><option>🟡 Req. Atención</option><option>🔴 Crítico</option><option>⚪ N/A</option></select>
+                    </td>
+                    <td class="col-date"><input type="date"></td>
+                    <td class="col-obs"><input type="text"></td>
+                </tr>
+            </tbody>
+        </table>
+
+        <h2>2. Fachadas, Rótulos y Vidrios</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th class="col-item">Elemento a Revisar</th>
+                    <th class="col-status">Estado Actual</th>
+                    <th class="col-date">Última Actividad</th>
+                    <th class="col-obs">Observaciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td class="col-item">Limpieza de fachada</td>
+                    <td class="col-status">
+                        <select class="status-dropdown"><option>🟢 Óptimo</option><option>🟡 Req. Atención</option><option>🔴 Crítico</option><option>⚪ N/A</option></select>
+                    </td>
+                    <td class="col-date"><input type="date"></td>
+                    <td class="col-obs"><input type="text"></td>
+                </tr>
+                <tr>
+                    <td class="col-item">Limpieza de rótulo</td>
+                    <td class="col-status">
+                        <select class="status-dropdown"><option>🟢 Óptimo</option><option>🟡 Req. Atención</option><option>🔴 Crítico</option><option>⚪ N/A</option></select>
+                    </td>
+                    <td class="col-date"><input type="date"></td>
+                    <td class="col-obs"><input type="text"></td>
+                </tr>
+                <tr>
+                    <td class="col-item">Funcionamiento eléctrico del rótulo (Enciende/Apaga)</td>
+                    <td class="col-status">
+                        <select class="status-dropdown"><option>🟢 Óptimo</option><option>🟡 Fallo Parcial</option><option>🔴 No enciende</option><option>⚪ N/A</option></select>
+                    </td>
+                    <td class="col-date"><input type="date"></td>
+                    <td class="col-obs"><input type="text"></td>
+                </tr>
+                <tr>
+                    <td class="col-item">Revisión de ventanas (Sin vidrios quebrados)</td>
+                    <td class="col-status">
+                        <select class="status-dropdown"><option>🟢 Óptimo</option><option>🟡 Fisura</option><option>🔴 Quebrado</option><option>⚪ N/A</option></select>
+                    </td>
+                    <td class="col-date"><input type="date"></td>
+                    <td class="col-obs"><input type="text"></td>
+                </tr>
+            </tbody>
+        </table>
+
+        <h2>3. Exteriores y Pavimentos</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th class="col-item">Elemento a Revisar</th>
+                    <th class="col-status">Estado Actual</th>
+                    <th class="col-date">Última Actividad</th>
+                    <th class="col-obs">Observaciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td class="col-item">Estado pintura perimetral</td>
+                    <td class="col-status">
+                        <select class="status-dropdown"><option>🟢 Óptimo</option><option>🟡 Req. Pintura</option><option>🔴 Crítico</option><option>⚪ N/A</option></select>
+                    </td>
+                    <td class="col-date"><input type="date"></td>
+                    <td class="col-obs"><input type="text"></td>
+                </tr>
+                <tr>
+                    <td class="col-item">Pintura de parqueo</td>
+                    <td class="col-status">
+                        <select class="status-dropdown"><option>🟢 Óptimo</option><option>🟡 Desgastada</option><option>🔴 Borrada</option><option>⚪ N/A</option></select>
+                    </td>
+                    <td class="col-date"><input type="date"></td>
+                    <td class="col-obs"><input type="text"></td>
+                </tr>
+                <tr>
+                    <td class="col-item">Pintura de señalizaciones</td>
+                    <td class="col-status">
+                        <select class="status-dropdown"><option>🟢 Óptimo</option><option>🟡 Desgastada</option><option>🔴 Borrada</option><option>⚪ N/A</option></select>
+                    </td>
+                    <td class="col-date"><input type="date"></td>
+                    <td class="col-obs"><input type="text"></td>
+                </tr>
+                <tr>
+                    <td class="col-item">Estado de pavimentos</td>
+                    <td class="col-status">
+                        <select class="status-dropdown"><option>🟢 Óptimo</option><option>🟡 Grietas</option><option>🔴 Baches</option><option>⚪ N/A</option></select>
+                    </td>
+                    <td class="col-date"><input type="date"></td>
+                    <td class="col-obs"><input type="text"></td>
+                </tr>
+                <tr>
+                    <td class="col-item">Portones y sistemas de ingreso/salida (Funcionando)</td>
+                    <td class="col-status">
+                        <select class="status-dropdown"><option>🟢 Óptimo</option><option>🟡 Con ruido</option><option>🔴 Falla</option><option>⚪ N/A</option></select>
+                    </td>
+                    <td class="col-date"><input type="date"></td>
+                    <td class="col-obs"><input type="text"></td>
+                </tr>
+            </tbody>
+        </table>
+
+        <h2>4. Iluminación y Sistemas Eléctricos</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th class="col-item">Elemento a Revisar</th>
+                    <th class="col-status">Estado Actual</th>
+                    <th class="col-date">Última Actividad</th>
+                    <th class="col-obs">Observaciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td class="col-item">Iluminación de la sucursal</td>
+                    <td class="col-status">
+                        <select class="status-dropdown"><option>🟢 Óptimo</option><option>🟡 Focos fundidos</option><option>🔴 Falla mayor</option><option>⚪ N/A</option></select>
+                    </td>
+                    <td class="col-date"><input type="date"></td>
+                    <td class="col-obs"><input type="text"></td>
+                </tr>
+                <tr>
+                    <td class="col-item">Revisión de sensores de iluminación</td>
+                    <td class="col-status">
+                        <select class="status-dropdown"><option>🟢 Óptimo</option><option>🟡 Lentos</option><option>🔴 Dañados</option><option>⚪ N/A</option></select>
+                    </td>
+                    <td class="col-date"><input type="date"></td>
+                    <td class="col-obs"><input type="text"></td>
+                </tr>
+                <tr>
+                    <td class="col-item">Estado de apagadores y tomacorrientes</td>
+                    <td class="col-status">
+                        <select class="status-dropdown"><option>🟢 Óptimo</option><option>🟡 Flojos</option><option>🔴 Dañados</option><option>⚪ N/A</option></select>
+                    </td>
+                    <td class="col-date"><input type="date"></td>
+                    <td class="col-obs"><input type="text"></td>
+                </tr>
+            </tbody>
+        </table>
+
+        <h2>5. Baños, Equipos y Puertas</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th class="col-item">Elemento a Revisar</th>
+                    <th class="col-status">Estado Actual</th>
+                    <th class="col-date">Última Actividad</th>
+                    <th class="col-obs">Observaciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td class="col-item">Baños de las sucursales</td>
+                    <td class="col-status">
+                        <select class="status-dropdown"><option>🟢 Óptimo</option><option>🟡 Fuga/Detalle</option><option>🔴 Dañado</option><option>⚪ N/A</option></select>
+                    </td>
+                    <td class="col-date"><input type="date"></td>
+                    <td class="col-obs"><input type="text"></td>
+                </tr>
+                <tr>
+                    <td class="col-item">CCTV y Monitoreo</td>
+                    <td class="col-status">
+                        <select class="status-dropdown"><option>🟢 Óptimo</option><option>🟡 Fallo parcial</option><option>🔴 Sin sistema</option><option>⚪ N/A</option></select>
+                    </td>
+                    <td class="col-date"><input type="date"></td>
+                    <td class="col-obs"><input type="text"></td>
+                </tr>
+                <tr>
+                    <td class="col-item">Equipo de música</td>
+                    <td class="col-status">
+                        <select class="status-dropdown"><option>🟢 Óptimo</option><option>🟡 Ruido/Fallo</option><option>🔴 No funciona</option><option>⚪ N/A</option></select>
+                    </td>
+                    <td class="col-date"><input type="date"></td>
+                    <td class="col-obs"><input type="text"></td>
+                </tr>
+                <tr>
+                    <td class="col-item">Elevadores</td>
+                    <td class="col-status">
+                        <select class="status-dropdown"><option>🟢 Óptimo</option><option>🟡 Ruidos</option><option>🔴 Falla</option><option>⚪ N/A</option></select>
+                    </td>
+                    <td class="col-date"><input type="date"></td>
+                    <td class="col-obs"><input type="text"></td>
+                </tr>
+                <tr>
+                    <td class="col-item">Puertas de vidrio o puertas en general</td>
+                    <td class="col-status">
+                        <select class="status-dropdown"><option>🟢 Óptimo</option><option>🟡 Desajuste</option><option>🔴 Dañadas</option><option>⚪ N/A</option></select>
+                    </td>
+                    <td class="col-date"><input type="date"></td>
+                    <td class="col-obs"><input type="text"></td>
+                </tr>
+                <tr>
+                    <td class="col-item">Estado de mobiliario y equipo</td>
+                    <td class="col-status">
+                        <select class="status-dropdown"><option>🟢 Óptimo</option><option>🟡 Desgastado</option><option>🔴 Quebrado</option><option>⚪ N/A</option></select>
+                    </td>
+                    <td class="col-date"><input type="date"></td>
+                    <td class="col-obs"><input type="text"></td>
+                </tr>
+            </tbody>
+        </table>
+
+        <button class="btn-submit" onclick="window.print()">🖨️ Generar PDF / Imprimir</button>
+    </div>
+</div>
+
+<script>
+    document.getElementById('fecha-hoy').valueAsDate = new Date();
+</script>
+
+</body>
+</html>
